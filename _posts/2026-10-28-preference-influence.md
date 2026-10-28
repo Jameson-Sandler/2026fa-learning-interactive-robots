@@ -9,12 +9,29 @@ ready: false
 
 # Reporter team authors
 authors:
-  - name: "Reporter Team (Student Names)"
+  - name: "Huu Binh Ta"
+  - name: "Duc Anh Nguyen"
+  - name: "Tristan Scott)"
 
 bibliography: 2026-10-28-preference-influence.bib
 
 toc:
-  - name: "Introduction"
+  - name: "Introduction & Motivation"
+  - name: "POLITE: Preferences Combined with Highlights in Reinforcement Learning"
+    subsections:
+      - name: "Limitations"
+
+  - name: "Learning Latent Representations to Influence Multi-Agent Interaction (LILI)"
+    subsections:
+      - name: "Limitations"
+
+  - name: "Conclusion"
+  - name: "Discussion Questions"
+    subsections:
+      - name: "Questions about POLITE"
+      - name: "Questions about Learning and Influencing Latent Intent (LILI)"  
+  
+  - name: "References"
 ---
 
 ## Introduction
@@ -25,6 +42,7 @@ This lecture report covers the **Preference, Influence** session in *Learning fo
 
 ---
 
-### Report Status
+## Questions about POLITE
 
-This report is currently being prepared and will be updated by the student reporter team following the lecture session and classroom discussion. Please check back soon!
+
+## Questions about Learning and Influencing Latent Intent (LILI)

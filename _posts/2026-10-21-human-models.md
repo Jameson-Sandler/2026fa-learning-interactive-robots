@@ -566,4 +566,4 @@ It is always tricky when some people will do things in a way that is unexpected 
 
 ## Appendix:
 
-Used GPT-6.1 Sol to transfer text into a Markdown file.
+For the Motivation, Background, and Less Model sections in the LESS is More paper, I wrote a Word document version of the report based on the slides and the recording. I then used GPT-6.1 Sol to convert the Word document into a Markdown file.

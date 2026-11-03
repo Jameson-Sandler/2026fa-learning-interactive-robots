@@ -1,7 +1,7 @@
 ---
 layout: distill
 title: "Preference, Influence"
-description: "Learning human reward functions and preferences from pairwise comparisons, rankings, and active information gathering."
+description: "Learning human reward functions and preferences from highlights in reinforcement learning and latent representations in multi-agent interactions."
 date: 2026-10-28
 future: true
 htmlwidgets: true

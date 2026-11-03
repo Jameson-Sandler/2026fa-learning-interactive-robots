@@ -19,21 +19,21 @@ toc:
   - name: "Introduction"
   - name: "POLITE: Preferences Combined with Highlights in Reinforcement Learning"
     subsections:
-      - name: "Motivation"
-      - name: "Related Works"
-      - name: "Methodology"
-      - name: "Experiments"
-      - name: "Conclusion"
-      - name: "Limitations"
+      - name: "POLITE Motivation"
+      - name: "POLITE Related Works"
+      - name: "POLITE Methodology"
+      - name: "POLITE Experiments"
+      - name: "POLITE Conclusion"
+      - name: "POLITE Limitations"
 
   - name: "LILI: Learning Latent Representations to Influence Multi-Agent Interaction"
     subsections:
-      - name: "Motivation"
-      - name: "Related Works"
-      - name: "Methodology"
-      - name: "Experiments"
-      - name: "Conclusion"
-      - name: "Limitations"
+      - name: "LILI Motivation"
+      - name: "LILI Related Works"
+      - name: "LILI Methodology"
+      - name: "LILI Experiments"
+      - name: "LILI Conclusion"
+      - name: "LILI Limitations"
   - name: "Overall Conclusion"
   - name: "Discussion Questions and In-Class Clarifications"
     subsections:
@@ -77,7 +77,7 @@ When robots and humans have to share the same space, the robot's actions will in
 #### Simon Holk, Daniel Marta and Iolanda Leite <d-cite key="holk2024"></d-cite>
 2024
 
-## Motivation
+## Motivation {#polite-motivation}
 **Research question:** How can a robot learn a better reward function from human feedback when a preferred trajectory still contains behavior that the human dislikes?
 
 Traditional RL depends on hand-crafted reward functions which struggle to capture complex human preferences, especially if there are several competing goals in one scenario. Preference-based RL allows for a human to compare two trajectories and says which one is preferred and why, which allows the robot to learn a reward function by balancing different goals involved in the environment and understanding the **causal relation**.
@@ -105,12 +105,12 @@ Where both will be used to update the reward function.
 
 - Demonstrate better sample efficiency in simulated MuJoCo tasks and a better-shaped reward in a user study with real human feedback.
 
-## Related Works
+## Related Works {#polite-related-works}
 **Human-in-the-loop learning.** Prior studies let humans give evaluative feedback as scalar signals <d-cite key="knox2009"></d-cite>, natural language corrections <d-cite key="sharma2022"></d-cite>, or by segmenting a trajectory into desirable and undesirable parts <d-cite key="cui2018"></d-cite>. POLITE follows the same idea of allowing humans the chance to explain their choice, but builts it into preference learning so that the robot learns relevant information to avoid causal confusion with fewer queries.
 
 **Learning from preference:** Preferenced-based RL <d-cite key="wirth2017"></d-cite> learns rewards through active query selection <d-cite key="sadigh2017"></d-cite>, from scratch <d-cite key="christiano2017"></d-cite>, bootstrapped with imitation learning <d-cite key="ibarz2018"></d-cite>, or from a pre-trained policy <d-cite key="lee2021"></d-cite>. In all of these prior studies, one label covers the entire segment. POLITE extends these works by adding highlights to show which parts of the segment are a part of the preferred label or not.
 
-## Methodology
+## Methodology {#polite-methodology}
 
 ### Problem Formulation
 **Segments and Highlights.** A segment $\sigma$ is a section of a trajectory. A highlight $h$ is a short windown inside a segment that ends at the selected state $j$:
@@ -193,7 +193,7 @@ where $$\alpha_+$$ and $$\alpha_-$$ control how strongly each kind of highlight 
    caption="Figure 3: POLITE training loop. (A) policy rollouts, (B) human gives preference and highlight annotations, and (C) reward model updates."
 %}
 
-## Experiments
+## Experiments {#polite-experiments}
 
 ### Experiment 1: Simulation (Synthetic Feedback)
 **Hypotheses:**
@@ -282,11 +282,11 @@ where $$\alpha_+$$ and $$\alpha_-$$ control how strongly each kind of highlight 
    caption="Figure 5: Learned reward vs. corridor position (a), learned reward vs. distance to goal (b), KL-divergence over training epochs (c), and the environment reward (d)."
 %}
 
-## Conclusion
+## Conclusion {#polite-conclusion}
 
 In this paper, preference-based RL is extended upon using positive and negative highlights. Humans then are able to give richer feedback by marking which parts of the trajectory they have a preference for, and these annotations are used within the reward function as regularization terms on top of the standard preference loss. With this finer-grained credit assignment, this method requires less queries in simulation. With real human feedback, the policy learns are more shaped reward that emphasizes the actions nearest to the goal. The addition of these highlights also makes human preferences more interpretable, as they show the causal features for driving behaviors.
 
-## Limitations
+## Limitations {#polite-limitations}
 - **Limited highlight expressiveness:** Each query only allows one $$h^+$$ and $$h^-$$. A segment with serveral key events can only can only get credit for one desirable and one undesirable event.
 
 - **Confounded human study:** The study split the participants into different groups of 20 people per condition. Reward differences may come from different people giving feedback rather than the highlight themselves.
@@ -298,7 +298,7 @@ In this paper, preference-based RL is extended upon using positive and negative 
 #### Annie Xie, Dylan P. Losey, Ryan Tolsma, Chelsea Finn, and Dorsa Sadigh <d-cite key="xie2021"></d-cite>
 2020
 
-## Motivation
+## Motivation {#lili-motivation}
 **Research question:** How can a robot learn to influence another agent's behavior to achieve better coordination?
 
 In multi-agent systems, agents continuously adapt to each other's behavior, making the environment non-stationary. Rather than merely reacting to others, an ego agent should anticipate their future strategies and learn how its own actions can influence them.
@@ -315,11 +315,11 @@ In multi-agent systems, agents continuously adapt to each other's behavior, maki
 * Enable the ego agent to anticipate and influence future strategies through repeated interactions.
 * Demonstrate improvements across simulated environments and real-world robotic air hockey.
 
-## Related Works
+## Related Works {#lili-related-works}
 **Multi-Agent Reinforcement Learning.** Prior studies address non-stationarity through opponent modeling <d-cite key="raileanu2018"></d-cite>, role representations <d-cite key="losey2020"></d-cite>, centralized training <d-cite key="lowe2017"></d-cite>, and communication protocols <d-cite key="foerster2016"></d-cite>. LILI instead models other agents' strategies using compact latent representations.
 **Influence Through Interactions.** Unlike methods that explicitly model opponents' policy updates <d-cite key="foerster2018"></d-cite> or introduce social influence rewards <d-cite key="jaques2019"></d-cite>, LILI learns influential behavior by maximizing long-term rewards without an additional influence reward.
 
-## Methodology
+## Methodology {#lili-methodology}
 
 ### Problem Formulation
 
@@ -369,7 +369,7 @@ Maximizing this reinforcement learning objective naturally motivates the ego age
    caption="Figure 8: The LILI algorithm: each interaction is run using a strategy inferred from the previous one and stored into a replay buffer. Representation and policy learning are then updated jointly from sampled interaction pairs."
 %}
 
-## Experiments
+## Experiments {#lili-experiments}
 ### Setting
 **Baseline:** SAC <d-cite key="haarnoja2018"></d-cite>, SLAC <d-cite key="lee2020"></d-cite>, LILAC <d-cite key="xie2020"></d-cite>, Oracle. 
 
@@ -479,11 +479,11 @@ From the above figure, across different task, we see the importance of having a 
    caption="Figure 11: Real-robot air hockey results: blocking success rate over interactions (left), distribution of where the opponent shoots (middle and right)."
 %}
 
-## Conclusion
+## Conclusion {#lili-conclusion}
 In this paper, a framework for multi-agent interaction that represents the low-level policies of non-stationary agents with high-level latent strategies is proposed, and incorporates these strategies into an RL algorithm. 
 They show that robots were able to anticipate how their behavior would affect another agent’s latent strategy, and actively influenced that agent for more seamless co-adaptation.
 
-## Limitations
+## Limitations {#lili-limitations}
 * **Strategy Assumptions:** The framework assumes latent strategies remain fixed within each interaction and exhibit predictable dynamics across interactions.
 * **Generalization:** Rapid or unpredictable changes in other agents' strategies may reduce the reliability of learned representations.
 * **Human Interaction:** The influence-aware policy was brittle against human opponents because it relied on precise paddle-edge blocking. More robust human-in-the-loop evaluation is needed.

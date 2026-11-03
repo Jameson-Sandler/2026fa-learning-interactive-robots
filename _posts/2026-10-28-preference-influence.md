@@ -42,6 +42,7 @@ toc:
   
   - name: "References"
 ---
+*All authors are affiliated with the University of Virginia.*
 
 ## Introduction
 

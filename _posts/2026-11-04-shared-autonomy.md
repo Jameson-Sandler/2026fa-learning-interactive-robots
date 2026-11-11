@@ -5,7 +5,7 @@ description: "How should a robot help without fighting its user? We study intent
 date: 2026-11-04
 future: true
 htmlwidgets: true
-ready: false  # Draft for team review; change to true only after approval.
+ready: true 
 authors:
   - name: "Vu-Anh Le"
   - name: "Jameson Sandler"
@@ -66,9 +66,12 @@ Dream2Assist builds on *Dreamer*, a model-based reinforcement learning approach 
 
 The training pipeline has three stages:
 
-1. **Construct diverse synthetic drivers.** Train separate policies for passing, staying behind, left-biased driving, and right-biased driving. Save intermediate checkpoints to represent varying levels of skill, rather than only expert behavior.
-2. **Learn an assistant across this population.** Train its RSSM to predict dynamics, rewards, and discrete intent; train an actor–critic policy on model-generated rollouts. This is a form of *fictitious co-play*: the assistant learns to work with many plausible human partners.
-3. **Deploy the assistant online.** Infer the driver's current objective from their behavior and apply continuous steering and throttle corrections appropriate to that objective.
+**Stage 1.** (_Construct diverse synthetic drivers_) Train separate policies for passing, staying behind, left-biased driving, and right-biased driving. Save intermediate checkpoints to represent varying levels of skill, rather than only expert behavior.
+
+
+**Stage 2.** (_Learn an assistant across this population_) Train its RSSM to predict dynamics, rewards, and discrete intent; train an actor–critic policy on model-generated rollouts. This is a form of *fictitious co-play*: the assistant learns to work with many plausible human partners.
+
+**Stage 3.** (_Deploy the assistant online_) Infer the driver's current objective from their behavior and apply continuous steering and throttle corrections appropriate to that objective.
 
 {% include figure.liquid path="assets/img/2026-11-04-shared-autonomy/dream2assist-pipeline.svg" class="img-fluid rounded z-depth-1" alt="Dream2Assist pipeline from synthetic driver behavior through an intent-aware recurrent state-space model to the assistant policy." caption="Figure 2: Conceptual Dream2Assist pipeline. Objective-labeled synthetic driver populations support an RSSM that jointly models the driving scene and human intent; the assistant uses that representation to select corrective actions. Original schematic after DeCastro et al. (2024) and lecture slides 22–26." %}
 
@@ -78,24 +81,24 @@ $$
 r_t^{\mathrm{interv}}=-\|a_t^A\|_2.
 $$
 
-Importantly, the model can evaluate a proposed action using the **predicted reward of an expert driver with the inferred intent**. The paper also explores an expert-action matching term, but the results discussed in the lecture use **expert-reward alignment**, since direct expert-action matching performed worse. This distinction helps explain why correctly *classifying* intent need not be enough: the assistant must also model the consequences of its actions.
+Importantly, the model can evaluate a proposed action using the predicted reward of an expert driver with the inferred intent. The paper also explores an expert-action matching term, but the results discussed in the lecture use expert-reward alignment, since direct expert-action matching performed worse. This distinction helps explain why correctly *classifying* intent need not be enough: the assistant must also model the consequences of its actions.
 
 ### Experiments and results
 
-Evaluation was conducted in the CARLA simulator on two sections of Thunderhill Raceway: a relatively easy **370 m straightaway** and a harder **960 m hairpin** section. The experiments separately contrasted *pass vs. stay-behind* and *left vs. right* preferences, averaging outcomes over five imperfect synthetic drivers. Baselines included ordinary **Dreamer**, which lacks intent-aware reward alignment, and **Dreamer-AIL**, an adversarial imitation-learning assistant without the same RSSM-based intent-aware planning structure.
+Evaluation was conducted in the CARLA simulator on two sections of Thunderhill Raceway: a relatively easy 370 m straightaway and a harder 960 m hairpin section. The experiments separately contrasted *pass vs. stay-behind* and *left vs. right* preferences, averaging outcomes over five imperfect synthetic drivers. Baselines included ordinary Dreamer, which lacks intent-aware reward alignment, and Dreamer-AIL, an adversarial imitation-learning assistant without the same RSSM-based intent-aware planning structure.
 
 The evaluation tracked change relative to unassisted driving in track progress, human-objective return, and collisions. The most informative findings were:
 
-- **In difficult hairpin settings, Dream2Assist improved track progress by roughly 27–72 m in the reported conditions**, without increasing collisions, while also better satisfying the simulated driver's preferred maneuver.
-- **Skill level mattered.** Imperfect drivers generally benefited most. More capable drivers often needed smaller corrections, and extra intervention could occasionally reduce their performance.
-- **Generic assistance could optimize the wrong behavior.** Dreamer sometimes favored staying behind an opponent even when the driver wished to pass, while Dreamer-AIL could freeze, collapse toward a single maneuver, or drive too aggressively.
-- **Intent accuracy did not guarantee useful help.** Intent classification achieved approximately **0.95–1.00 F1** in the lecture's reported tests. A non-RSSM ablation could classify intent nearly as well, yet assisted less effectively—suggesting the importance of learned dynamics and reward predictions.
+- (_In difficult hairpin settings, Dream2Assist improved track progress by roughly 27–72 m in the reported conditions_), without increasing collisions, while also better satisfying the simulated driver's preferred maneuver.
+- (_Skill level mattered._) Imperfect drivers generally benefited most. More capable drivers often needed smaller corrections, and extra intervention could occasionally reduce their performance.
+- (Generic assistance could optimize the wrong behavior.] Dreamer sometimes favored staying behind an opponent even when the driver wished to pass, while Dreamer-AIL could freeze, collapse toward a single maneuver, or drive too aggressively.
+- (_Intent accuracy did not guarantee useful help._) Intent classification achieved approximately **0.95–1.00 F1** in the lecture's reported tests. A non-RSSM ablation could classify intent nearly as well, yet assisted less effectively—suggesting the importance of learned dynamics and reward predictions.
 
 A more demanding test swapped synthetic drivers mid-race to simulate a sudden change in intent. Classification performance initially fell, then recovered to high accuracy after approximately **4–8 seconds**. This shows some adaptability, but also exposes a potentially significant lag in a high-speed setting.
 
 ### Limitations
 
-The evaluated 2024 system was trained and tested with **synthetic human policies**, not real drivers sharing control in the reported experiments. Its set of tactical intents was small and predefined, and the opponent vehicles replayed recorded trajectories rather than adapting to the driver. The approach also depended on expert models for each known objective. These choices make the method controlled and interpretable, but leave open questions about natural human behavior, novel objectives, multi-agent interactions, and the safety of assistance during intent transitions.
+The evaluated 2024 system was trained and tested with synthetic human policies, not real drivers sharing control in the reported experiments. Its set of tactical intents was small and predefined, and the opponent vehicles replayed recorded trajectories rather than adapting to the driver. The approach also depended on expert models for each known objective. These choices make the method controlled and interpretable, but leave open questions about natural human behavior, novel objectives, multi-agent interactions, and the safety of assistance during intent transitions.
 
 ## Shared Autonomy with Learned Latent Actions
 
@@ -187,11 +190,11 @@ Three lessons emerge. **First**, the assistant should represent *why* a person a
 
 The lecture concluded with questions about when assistance becomes over-assistance. Several are especially important for designing future systems:
 
-1. **Intent versus safety.** If a driver signals an overtake that appears unsafe, should the assistant optimize for the intended maneuver, delay it, or override it? What should trigger that decision?
-2. **Intent changes and latency.** Dream2Assist can take several seconds to recover after a simulated intent switch. How should an assistant behave while its estimate is unreliable, especially in a fast-changing environment?
-3. **Expressive control versus predictable control.** A latent action may coordinate many robot joints at once but be hard for a human to interpret. Could online adaptation, feedback, or more interpretable constraints make the interface easier to learn?
-4. **Detecting over-assistance.** Should we measure intervention magnitude, goal error, successful human corrections, subjective agency, or all of them? How would these metrics change across users and tasks?
-5. **Generalizing beyond the demonstrated setting.** How would the systems scale to unfamiliar intents, reactive opponents, new objects, or users whose control patterns vary substantially from training data?
+1. If a driver signals an overtake that appears unsafe, should the assistant optimize for the intended maneuver, delay it, or override it? What should trigger that decision?
+2. Dream2Assist can take several seconds to recover after a simulated intent switch. How should an assistant behave while its estimate is unreliable, especially in a fast-changing environment?
+3. A latent action may coordinate many robot joints at once but be hard for a human to interpret. Could online adaptation, feedback, or more interpretable constraints make the interface easier to learn?
+4. Should we measure intervention magnitude, goal error, successful human corrections, subjective agency, or all of them? How would these metrics change across users and tasks?
+5. How would the systems scale to unfamiliar intents, reactive opponents, new objects, or users whose control patterns vary substantially from training data?
 
 A natural direction is to combine the two ideas: use a predictive model to maintain uncertainty over human objectives **and** a latent control interface designed to preserve controllable escape routes when that uncertainty is wrong. Such a system would not treat confidence as permission to eliminate alternatives; it would learn to assist while remaining corrigible to the user's next action.
 
